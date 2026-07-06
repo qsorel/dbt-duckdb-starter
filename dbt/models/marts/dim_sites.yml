@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: dim_sites
+    description: >
+      Site dimension table. One row per research site.
+    columns:
+      - name: site_id
+        description: Primary key. Unique identifier for the research site (e.g. si_0001).
+      - name: site_name
+        description: Full name of the research center.
+      - name: country_code
+        description: ISO country code for the site.
+      - name: country_name
+        description: Full English name of the country where the site operates.

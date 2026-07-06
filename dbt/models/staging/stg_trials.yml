@@ -6,9 +6,14 @@ models:
     columns:
       - name: trial_id
         description: Unique identifier for the clinical trial (e.g. tr_0001).
+        tests:
+          - unique
+          - not_null
       - name: sponsor_id
         description: Foreign key to the sponsor funding this trial.
-      - name: trialName
+        tests:
+          - not_null
+      - name: trial_name
         description: Internal code name for the trial (e.g. Aspire-342).
       - name: indication
         description: Medical condition or disease targeted by the trial.

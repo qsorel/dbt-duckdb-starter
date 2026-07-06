@@ -1,6 +1,6 @@
 with sites as (
 
-  select * from {{ ref('staging_sites') }}
+  select * from {{ ref('stg_sites') }}
 
 )
 
@@ -8,8 +8,8 @@ with sites as (
 
   select
     site_id
-    , siteName
-    , countryCode
+    , site_name
+    , country_code
     , country_name
   from sites
 

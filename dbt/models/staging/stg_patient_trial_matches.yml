@@ -9,13 +9,26 @@ models:
     columns:
       - name: patient_id
         description: Identifier for the patient (e.g. pat_12345). Not globally unique — a patient can appear in multiple trials.
+        tests:
+          - not_null
       - name: trial_id
         description: Foreign key to the trial this patient was matched to.
+        tests:
+          - not_null
       - name: site_id
         description: Foreign key to the site where this match was processed.
-      - name: processedAt
+        tests:
+          - not_null
+      - name: processed_at
         description: Timestamp when the patient was first processed (matched) for this trial. Always populated.
-      - name: reviewedAt
+      - name: reviewed_at
         description: Timestamp when the match was reviewed by the site. Null if not yet reviewed.
-      - name: enrolledAt
+      - name: enrolled_at
         description: Timestamp when the patient was enrolled in the trial. Null if not enrolled.
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - patient_id
+            - trial_id
+            - site_id

@@ -9,7 +9,7 @@ with trials as (
   select
     trial_id
     , sponsor_id
-    , trialName
+    , trial_name
     , indication
     , phase
     , status

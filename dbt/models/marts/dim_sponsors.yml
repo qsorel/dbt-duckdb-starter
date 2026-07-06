@@ -10,5 +10,5 @@ models:
         description: Primary key. Unique identifier for the sponsor (e.g. sp_001).
       - name: sponsor_name
         description: Display name of the pharmaceutical company (e.g. Sanofi, Moderna).
-      - name: createdAt
+      - name: created_at
         description: Timestamp when the sponsor record was first created.

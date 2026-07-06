@@ -6,7 +6,10 @@ models:
     columns:
       - name: sponsor_id
         description: Unique identifier for the sponsor (e.g. sp_001).
+        tests:
+          - unique
+          - not_null
       - name: sponsor_name
         description: Display name of the pharmaceutical company sponsoring trials.
-      - name: createdAt
+      - name: created_at
         description: Timestamp when the sponsor record was first created.

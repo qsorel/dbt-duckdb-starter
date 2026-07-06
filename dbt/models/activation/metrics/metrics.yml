@@ -1,0 +1,80 @@
+version: 2
+
+metrics:
+  # Base count metrics
+
+  - name: processed_count
+    label: Processed
+    description: Count of processed patient trial matches.
+    type: count
+    model: ref('fct_patient_trial_matches')
+    filter: "is_processed = true"
+
+  - name: reviewed_count
+    label: Reviewed
+    description: Count of reviewed patient trial matches.
+    type: count
+    model: ref('fct_patient_trial_matches')
+    filter: "is_reviewed = true"
+
+  - name: enrolled_count
+    label: Enrolled
+    description: Count of enrolled patient trial matches.
+    type: count
+    model: ref('fct_patient_trial_matches')
+    filter: "is_enrolled = true"
+
+  # Average duration metrics
+
+  - name: avg_days_processed_to_reviewed
+    label: Average Days from Processed to Reviewed
+    type: average
+    sql: days_from_processed_to_reviewed
+    model: ref('fct_patient_trial_matches')
+
+  - name: avg_days_reviewed_to_enrolled
+    label: Average Days from Reviewed to Enrolled
+    type: average
+    sql: days_from_reviewed_to_enrolled
+    model: ref('fct_patient_trial_matches')
+
+  - name: avg_days_processed_to_enrolled
+    label: Average Days from Processed to Enrolled
+    type: average
+    sql: days_from_processed_to_enrolled
+    model: ref('fct_patient_trial_matches')
+
+  # Derived metrics
+
+  - name: processed_to_reviewed_conversion_rate
+    label: Processed to Reviewed Conversion Rate
+    type: derived
+    type_params:
+      expr: reviewed / processed
+      metrics:
+        - name: reviewed_count
+          alias: reviewed
+        - name: processed_count
+          alias: processed
+
+  - name: reviewed_to_enrolled_conversion_rate
+    label: Reviewed to Enrolled Conversion Rate
+    type: derived
+    type_params:
+      expr: enrolled / reviewed
+      metrics:
+        - name: enrolled_count
+          alias: enrolled
+        - name: reviewed_count
+          alias: reviewed
+
+  - name: processed_to_enrolled_conversion_rate
+    label: Processed to Enrolled Conversion Rate
+    type: derived
+    type_params:
+      expr: enrolled / processed
+      metrics:
+        - name: enrolled_count
+          alias: enrolled
+        - name: processed_count
+          alias: processed

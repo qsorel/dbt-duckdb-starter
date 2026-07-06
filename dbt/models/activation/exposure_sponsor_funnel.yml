@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: exposure_sponsor_funnel
+    description: >
+      Sponsor funnel exposure model showing patient-trial match conversion and timing metrics
+      by sponsor, trial, site, and country.
+    columns:
+      - name: sponsor_id
+        description: Foreign key to dim_sponsors. The sponsor funding the trial.
+      - name: sponsor_name
+        description: Display name of the sponsor.
+      - name: trial_id
+        description: Foreign key to dim_trials. The trial associated with the match.
+      - name: trial_name
+        description: Internal code name of the trial.
+      - name: site_id
+        description: Foreign key to dim_sites. The site where the match was processed.
+      - name: site_name
+        description: Name of the research site.
+      - name: country_code
+        description: ISO country code of the site.
+      - name: country_name
+        description: Country name of the site.
+      - name: total_matches
+        description: Number of patient-trial matches in this sponsor/site/trial segment.
+      - name: processed_count
+        description: Number of matches that reached the processed stage.
+      - name: reviewed_count
+        description: Number of matches that reached the reviewed stage.
+      - name: enrolled_count
+        description: Number of matches that reached the enrolled stage.
+      - name: processed_to_reviewed_conversion_rate
+        description: Review rate from processed to reviewed.
+      - name: reviewed_to_enrolled_conversion_rate
+        description: Enrollment rate from reviewed to enrolled.
+      - name: processed_to_enrolled_conversion_rate
+        description: Overall enrollment rate from processed to enrolled.
+      - name: avg_days_processed_to_reviewed
+        description: Average time in days between processed and reviewed stages.
+      - name: avg_days_reviewed_to_enrolled
+        description: Average time in days between reviewed and enrolled stages.
+      - name: avg_days_processed_to_enrolled
+        description: Average time in days between processed and enrolled stages.
+
+metrics:
+  - name: processed_to_reviewed_conversion_rate
+    label: Processed to Reviewed Conversion Rate
+    description: Conversion rate from processed to reviewed for this funnel segment.
+    type: ratio
+    model: ref('exposure_sponsor_funnel')
+    sql: "${TABLE}.reviewed_count"
+    expression: "SUM(reviewed_count) * 1.0 / NULLIF(SUM(processed_count), 0)"
+
+  - name: reviewed_to_enrolled_conversion_rate
+    label: Reviewed to Enrolled Conversion Rate
+    description: Conversion rate from reviewed to enrolled for this funnel segment.
+    type: ratio
+    model: ref('exposure_sponsor_funnel')
+    sql: "${TABLE}.enrolled_count"
+    expression: "SUM(enrolled_count) * 1.0 / NULLIF(SUM(reviewed_count), 0)"
+
+  - name: processed_to_enrolled_conversion_rate
+    label: Processed to Enrolled Conversion Rate
+    description: Overall conversion rate from processed to enrolled for this funnel segment.
+    type: ratio
+    model: ref('exposure_sponsor_funnel')
+    sql: "${TABLE}.enrolled_count"
+    expression: "SUM(enrolled_count) * 1.0 / NULLIF(SUM(processed_count), 0)"
+
+  - name: avg_days_processed_to_reviewed
+    label: Average Days Processed to Reviewed
+    description: Average days from processed to reviewed for this funnel segment.
+    type: average
+    model: ref('exposure_sponsor_funnel')
+    sql: "${TABLE}.avg_days_processed_to_reviewed"
+
+  - name: avg_days_reviewed_to_enrolled
+    label: Average Days Reviewed to Enrolled
+    description: Average days from reviewed to enrolled for this funnel segment.
+    type: average
+    model: ref('exposure_sponsor_funnel')
+    sql: "${TABLE}.avg_days_reviewed_to_enrolled"
+
+  - name: avg_days_processed_to_enrolled
+    label: Average Days Processed to Enrolled
+    description: Average days from processed to enrolled for this funnel segment.
+    type: average
+    model: ref('exposure_sponsor_funnel')
+    sql: "${TABLE}.avg_days_processed_to_enrolled"

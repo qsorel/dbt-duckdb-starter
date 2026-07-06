@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: fct_patient_trial_matches
+    description: >
+      Fact table of patient-trial matches. Each row represents one patient
+      being matched to one trial at one site. The funnel timestamps track
+      the patient's progression: processed → reviewed → enrolled.
+    columns:
+      - name: patient_id
+        description: Identifier for the patient (e.g. pat_12345). Not globally unique — a patient can appear in multiple trials.
+        tests:
+          - not_null
+      - name: trial_id
+        description: Foreign key to dim_trials. The trial this patient was matched to.
+        tests:
+          - not_null
+      - name: site_id
+        description: Foreign key to dim_sites. The site where this match was processed.
+        tests:
+          - not_null
+      - name: processed_at
+        description: Timestamp when the patient was first processed (matched) for this trial. Always populated.
+      - name: reviewed_at
+        description: Timestamp when the match was reviewed by the site. Null if not yet reviewed.
+      - name: enrolled_at
+        description: Timestamp when the patient was enrolled in the trial. Null if not enrolled.
+      - name: is_processed
+        description: Boolean flag indicating whether the match reached the processed stage.
+      - name: is_reviewed
+        description: Boolean flag indicating whether the match reached the reviewed stage.
+      - name: is_enrolled
+        description: Boolean flag indicating whether the match reached the enrolled stage.
+      - name: days_from_processed_to_reviewed
+        description: Number of days between processed and reviewed timestamps. Null when either step is missing.
+      - name: days_from_reviewed_to_enrolled
+        description: Number of days between reviewed and enrolled timestamps. Null when either step is missing.
+      - name: days_from_processed_to_enrolled
+        description: Number of days between processed and enrolled timestamps. Null when either step is missing.
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - patient_id
+            - trial_id
+            - site_id

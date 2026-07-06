@@ -9,7 +9,7 @@ with sponsors as (
   select
     sponsor_id
     , sponsor_name
-    , createdAt
+    , created_at
   from sponsors
 
 )
